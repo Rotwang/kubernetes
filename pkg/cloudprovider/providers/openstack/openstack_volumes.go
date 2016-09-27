@@ -54,12 +54,11 @@ func (os *OpenStack) AttachDisk(instanceID string, diskName string) (string, err
 		} else {
 			errMsg := fmt.Sprintf("Disk %q is attached to a different compute: %q, should be detached before proceeding. DETACHING DIS SHIT Y0!!", diskName, disk.Attachments[0]["server_id"])
 			glog.Errorf(errMsg)
-			err = volumeattach.Delete(cClient, instanceID, disk.ID).ExtractErr()
-			glog.Errorf(err)
-			time.Sleep(15000 * time.Millisecond)
-			glog.Errorf("AND NAO DETACHINGS")
+			//err = volumeattach.Delete(cClient, instanceID, disk.ID).ExtractErr()
+			//glog.Errorf(err.Error())
+			//time.Sleep(15000 * time.Millisecond)
 			err = os.DetachDisk(instanceID, diskName)
-			glog.Errorf(err)
+			glog.Errorf(err.Error())
 			time.Sleep(15000 * time.Millisecond)
 		}
 	}
