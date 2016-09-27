@@ -51,9 +51,12 @@ func (os *OpenStack) AttachDisk(instanceID string, diskName string) (string, err
 			glog.V(4).Infof("Disk: %q is already attached to compute: %q", diskName, instanceID)
 			return disk.ID, nil
 		} else {
-			errMsg := fmt.Sprintf("Disk %q is attached to a different compute: %q, should be detached before proceeding", diskName, disk.Attachments[0]["server_id"])
+			errMsg := fmt.Sprintf("Disk %q is attached to a different compute: %q, should be detached before proceeding. DETACHING DIS SHIT Y0!!", diskName, disk.Attachments[0]["server_id"])
 			glog.Errorf(errMsg)
-			return "", errors.New(errMsg)
+			cClient, err := openstack.NewComputeV2(os.provider, gophercloud.EndpointOpts{
+				Region: os.region,
+			})
+			_ = volumeattach.Delete(cClient, instanceID, disk.ID).ExtractErr()
 		}
 	}
 	// add read only flag here if possible spothanis
