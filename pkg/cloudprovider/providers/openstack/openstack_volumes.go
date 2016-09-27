@@ -18,6 +18,7 @@ package openstack
 
 import (
 	"errors"
+	"time"
 	"fmt"
 	"io/ioutil"
 	"path"
@@ -53,10 +54,13 @@ func (os *OpenStack) AttachDisk(instanceID string, diskName string) (string, err
 		} else {
 			errMsg := fmt.Sprintf("Disk %q is attached to a different compute: %q, should be detached before proceeding. DETACHING DIS SHIT Y0!!", diskName, disk.Attachments[0]["server_id"])
 			glog.Errorf(errMsg)
-			cClient, _ := openstack.NewComputeV2(os.provider, gophercloud.EndpointOpts{
-				Region: os.region,
-			})
-			_ = volumeattach.Delete(cClient, instanceID, disk.ID).ExtractErr()
+			err = volumeattach.Delete(cClient, instanceID, disk.ID).ExtractErr()
+			glog.Errorf(err)
+			time.Sleep(15000 * time.Millisecond)
+			glog.Errorf("AND NAO DETACHINGS")
+			err = os.DetachDisk(instanceID, diskName)
+			glog.Errorf(err)
+			time.Sleep(15000 * time.Millisecond)
 		}
 	}
 	// add read only flag here if possible spothanis
