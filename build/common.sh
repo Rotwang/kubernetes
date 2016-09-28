@@ -517,19 +517,7 @@ function kube::build::docker_build() {
 
   kube::log::status "Building Docker image ${image}"
   local docker_output
-  docker_output=$("${build_cmd[@]}" 2>&1) || {
-    cat <<EOF >&2
-+++ Docker build command failed for ${image}
-
-${docker_output}
-
-To retry manually, run:
-
-${build_cmd[*]}
-
-EOF
-    return 1
-  }
+  ${build_cmd[@]}
 }
 
 function kube::build::clean_image() {

@@ -19,6 +19,7 @@
 # For pushing these artifacts publicly on Google Cloud Storage, see the 
 # associated build/push-* scripts.
 
+set -x
 set -o errexit
 set -o nounset
 set -o pipefail
